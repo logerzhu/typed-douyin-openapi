@@ -27,16 +27,17 @@ export abstract class DouyinBase extends Api {
   }
 
   async resolveAccessToken() {
-    const result = await this.request({
-      method: 'post',
-      url: 'api/apps/v2/token',
-      data: {
-        grant_type: 'client_credential',
-        appid: this.appid,
-        secret: this.secret
-      },
-      ignoreAccessToken: true
-    })
+    const result = (
+      await this.request({
+        method: 'post',
+        url: 'api/apps/v2/token',
+        data: {
+          grant_type: 'client_credential',
+          appid: this.appid,
+          secret: this.secret
+        }
+      })
+    ).data
     return { access_token: result.access_token, expires_in: result.expires_in }
   }
 }

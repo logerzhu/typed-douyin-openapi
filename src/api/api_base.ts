@@ -33,17 +33,8 @@ export abstract class ApiBase {
     })
   }
 
-  async request(
-    opts: AxiosRequestConfig & { ignoreAccessToken?: boolean },
-    retry = 3
-  ): Promise<any> {
+  async request(opts: AxiosRequestConfig, retry = 3): Promise<any> {
     opts.method = opts.method || 'get'
-    if (!opts.ignoreAccessToken) {
-      const token = await this.ensureAccessToken()
-      opts.params = opts.params || {}
-      opts.params[this.config.accessTokenKey] = token.accessToken
-    }
-
     try {
       const res = await this.axiosInstance.request(opts)
       this.logger('DouyinRequest', opts, res.data)
@@ -53,10 +44,9 @@ export abstract class ApiBase {
           -1
         )
       }
-
-      const { err_no, err_tips, data } = res.data
-      if (!err_no && data) {
-        return data
+      const { err_no, err_tips } = res.data
+      if (!err_no) {
+        return res.data
       }
 
       if ([12024, 12025].indexOf(err_no) != -1 && retry > 0) {
@@ -67,11 +57,11 @@ export abstract class ApiBase {
         throw new DouyinAPIError(err_tips, err_no)
       }
     } catch (error) {
-      console.error('ErrorRequest:', opts.url)
+      console.error('ErrorRequest:', opts.url, new Date())
       if (error instanceof DouyinAPIError) {
         throw error
       } else if (error.response) {
-        console.error('ErrorRequest', opts)
+        console.error('ErrorRequest', opts, new Date())
         throw new DouyinAPIError(
           error.response.data?.err_tips || '服务器内部错误',
           error.response.data?.err_no || error.response.status
@@ -104,8 +94,8 @@ export abstract class ApiBase {
   async ensureAccessToken() {
     const token = await this.tokenStorage.load()
     if (token?.isValid()) {
-      return token
+      return token.accessToken
     }
-    return this.getAccessToken()
+    return (await this.getAccessToken()).accessToken
   }
 }

@@ -1,8 +1,10 @@
 import { TokenStorage } from '../../storage'
 import { applyMixins } from '../../utils'
 import { DouyinBase } from './douyin_base'
+import { DouyinLogin } from './douyin_login'
+import { DouyinUrlLink } from './douyin_url_link'
 
-export interface DouyinApi extends DouyinBase {}
+export interface DouyinApi extends DouyinBase, DouyinLogin, DouyinUrlLink {}
 
 export class DouyinApi extends DouyinBase {
   readonly appid: string
@@ -22,4 +24,4 @@ export class DouyinApi extends DouyinBase {
   }
 }
 
-applyMixins(DouyinApi, [])
+applyMixins(DouyinApi, [DouyinLogin, DouyinUrlLink])
