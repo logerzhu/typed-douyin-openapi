@@ -1,1 +1,1 @@
-export * from './openapi/douyin_api'
+export * from './openapi'

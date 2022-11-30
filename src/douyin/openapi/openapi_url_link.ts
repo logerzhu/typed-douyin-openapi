@@ -1,6 +1,6 @@
-import { DouyinBase } from './douyin_base'
+import { OpenapiBase } from './openapi_base'
 
-export abstract class DouyinUrlLink extends DouyinBase {
+export abstract class OpenapiUrlLink extends OpenapiBase {
   /**
    * 成能够直接跳转到端内小程序的 url link。
    */

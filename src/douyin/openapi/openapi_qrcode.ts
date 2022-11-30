@@ -1,6 +1,6 @@
-import { DouyinBase } from './douyin_base'
+import { OpenapiBase } from './openapi_base'
 
-export abstract class DouyinQRCode extends DouyinBase {
+export abstract class OpenapiQRCode extends OpenapiBase {
   /**
    * 获取小程序/小游戏的二维码
    */

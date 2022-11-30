@@ -1,8 +1,8 @@
 /* eslint-env jest */
-import { testDouyinApi, testOpenid } from '../config'
+import { testDouyinOpenapi, testOpenid } from '../config'
 
 test('Test Douyin Customer Api', async () => {
-  const customerService = await testDouyinApi.customerServiceUrl({
+  const customerService = await testDouyinOpenapi.customerServiceUrl({
     openid: testOpenid,
     type: '1128'
   })

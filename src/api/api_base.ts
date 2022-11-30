@@ -1,29 +1,21 @@
-import { AccessToken, MemoryTokenStorage, TokenStorage } from '../storage'
+import { MemoryTokenStorage, TokenStorage } from './storage'
 import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { DouyinAPIError } from '../errors'
-
-export type APIConfig = {
-  baseURL: string
-}
 
 export type Logger = (message: any, ...args: any[]) => void
 
 export abstract class ApiBase {
-  readonly config: Required<APIConfig>
-  private tokenStorage: TokenStorage
+  readonly baseURL: string
+  protected tokenStorage: TokenStorage
   private axiosInstance: AxiosInstance
 
   logger: Logger = () => {}
 
-  protected constructor(config: APIConfig, tokenStorage?: TokenStorage) {
-    this.config = {
-      ...config,
-      baseURL: config.baseURL
-    }
+  protected constructor(baseURL: string, tokenStorage?: TokenStorage) {
     this.tokenStorage = tokenStorage || new MemoryTokenStorage()
 
     this.axiosInstance = Axios.create({
-      baseURL: this.config.baseURL,
+      baseURL: baseURL,
       timeout: 12000,
       headers: {
         'Content-Type': 'application/json'
@@ -74,28 +66,5 @@ export abstract class ApiBase {
         throw new DouyinAPIError('未知错误', -500)
       }
     }
-  }
-
-  abstract resolveAccessToken(): Promise<{
-    access_token: string
-    expires_in: number
-  }>
-
-  async getAccessToken() {
-    const { expires_in, access_token } = await this.resolveAccessToken()
-    // 过期时间，因网络延迟等，将实际过期时间提前10秒，以防止临界点
-    const expireTime = new Date().getTime() + (expires_in - 10) * 1000
-    const token = new AccessToken(access_token, expireTime)
-
-    await this.tokenStorage.save(token)
-    return token
-  }
-
-  async ensureAccessToken() {
-    const token = await this.tokenStorage.load()
-    if (token?.isValid()) {
-      return token.accessToken
-    }
-    return (await this.getAccessToken()).accessToken
   }
 }

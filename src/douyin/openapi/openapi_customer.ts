@@ -1,6 +1,6 @@
-import { DouyinBase } from './douyin_base'
+import { OpenapiBase } from './openapi_base'
 
-export abstract class DouyinCustomer extends DouyinBase {
+export abstract class OpenapiCustomer extends OpenapiBase {
   /**
    * 获取官方平台客服链接
    */

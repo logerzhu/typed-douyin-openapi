@@ -1,6 +1,6 @@
-import { DouyinBase } from './douyin_base'
+import { OpenapiBase } from './openapi_base'
 
-export abstract class DouyinLogin extends DouyinBase {
+export abstract class OpenapiLogin extends OpenapiBase {
   /**
    * 获取用户登录的 session_key 和 openId。
    */
