@@ -4,7 +4,6 @@ import { DouyinAPIError } from '../errors'
 
 export type APIConfig = {
   baseURL: string
-  accessTokenKey?: string
 }
 
 export type Logger = (message: any, ...args: any[]) => void
@@ -19,8 +18,7 @@ export abstract class ApiBase {
   protected constructor(config: APIConfig, tokenStorage?: TokenStorage) {
     this.config = {
       ...config,
-      baseURL: config.baseURL,
-      accessTokenKey: config.accessTokenKey || 'access_token'
+      baseURL: config.baseURL
     }
     this.tokenStorage = tokenStorage || new MemoryTokenStorage()
 
@@ -44,7 +42,7 @@ export abstract class ApiBase {
           -1
         )
       }
-      const { err_no, err_tips } = res.data
+      const { err_no, err_msg, err_tips } = res.data
       if (!err_no) {
         return res.data
       }
@@ -54,7 +52,7 @@ export abstract class ApiBase {
         await this.tokenStorage.save(null)
         return this.request(opts, retry - 1)
       } else {
-        throw new DouyinAPIError(err_tips, err_no)
+        throw new DouyinAPIError(err_tips || err_msg, err_no)
       }
     } catch (error) {
       console.error('ErrorRequest:', opts.url, new Date())
@@ -63,7 +61,9 @@ export abstract class ApiBase {
       } else if (error.response) {
         console.error('ErrorRequest', opts, new Date())
         throw new DouyinAPIError(
-          error.response.data?.err_tips || '服务器内部错误',
+          error.response.data?.err_tips ||
+            error.response.data?.err_msg ||
+            '服务器内部错误',
           error.response.data?.err_no || error.response.status
         )
       } else if (error.request) {

@@ -3,8 +3,13 @@ import { applyMixins } from '../../utils'
 import { DouyinBase } from './douyin_base'
 import { DouyinLogin } from './douyin_login'
 import { DouyinUrlLink } from './douyin_url_link'
+import { DouyinCustomer } from './douyin_customer'
 
-export interface DouyinApi extends DouyinBase, DouyinLogin, DouyinUrlLink {}
+export interface DouyinApi
+  extends DouyinBase,
+    DouyinLogin,
+    DouyinUrlLink,
+    DouyinCustomer {}
 
 export class DouyinApi extends DouyinBase {
   readonly appid: string
@@ -24,4 +29,4 @@ export class DouyinApi extends DouyinBase {
   }
 }
 
-applyMixins(DouyinApi, [DouyinLogin, DouyinUrlLink])
+applyMixins(DouyinApi, [DouyinLogin, DouyinUrlLink, DouyinCustomer])
