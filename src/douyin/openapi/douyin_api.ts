@@ -4,12 +4,14 @@ import { DouyinBase } from './douyin_base'
 import { DouyinLogin } from './douyin_login'
 import { DouyinUrlLink } from './douyin_url_link'
 import { DouyinCustomer } from './douyin_customer'
+import { DouyinQRCode } from './douyin_qrcode'
 
 export interface DouyinApi
   extends DouyinBase,
     DouyinLogin,
     DouyinUrlLink,
-    DouyinCustomer {}
+    DouyinCustomer,
+    DouyinQRCode {}
 
 export class DouyinApi extends DouyinBase {
   readonly appid: string
@@ -29,4 +31,9 @@ export class DouyinApi extends DouyinBase {
   }
 }
 
-applyMixins(DouyinApi, [DouyinLogin, DouyinUrlLink, DouyinCustomer])
+applyMixins(DouyinApi, [
+  DouyinLogin,
+  DouyinUrlLink,
+  DouyinCustomer,
+  DouyinQRCode
+])
