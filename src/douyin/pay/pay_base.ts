@@ -1,16 +1,19 @@
 import { TokenStorage } from '../../api/storage'
 import { ApiBase } from '../../api/api_base'
 import md5 from 'md5'
+import { DouyinAPIError } from '../../errors'
 
 export abstract class PayBase extends ApiBase {
   readonly appid: string
   readonly salt: string
+  readonly token: string
   readonly sandbox: boolean
 
   protected constructor(
     config: {
       appid: string
       salt: string
+      token: string
       sandbox?: boolean
     },
     tokenStorage?: TokenStorage
@@ -23,6 +26,7 @@ export abstract class PayBase extends ApiBase {
     )
     this.appid = config.appid
     this.salt = config.salt
+    this.token = config.token
     this.sandbox = config.sandbox || false
   }
 
@@ -47,5 +51,25 @@ export abstract class PayBase extends ApiBase {
     signParams['sign'] = md5(paramArray.join('&'))
     console.log(JSON.stringify(signParams), this.salt)
     return signParams
+  }
+
+  verifyAndGetMsg(query: {
+    msg_signature: string
+    timestamp: number
+    msg: string
+    nonce: string
+  }) {
+    const { msg_signature, timestamp, msg, nonce } = query
+    const strArr = [this.token, timestamp, nonce, msg].sort()
+    const str = strArr.join('')
+    const _signature = require('crypto')
+      .createHash('sha1')
+      .update(str)
+      .digest('hex')
+    if (msg_signature == _signature) {
+      return JSON.parse(msg)
+    } else {
+      throw new DouyinAPIError('Invalid signature', -2)
+    }
   }
 }

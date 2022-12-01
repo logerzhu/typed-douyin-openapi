@@ -10,6 +10,7 @@ export class DouyinPay extends PayBase {
     config: {
       appid: string
       salt: string
+      token: string
       sandbox?: boolean
     },
     tokenStorage?: TokenStorage
