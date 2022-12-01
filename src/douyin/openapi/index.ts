@@ -5,13 +5,15 @@ import { OpenapiLogin } from './openapi_login'
 import { OpenapiUrlLink } from './openapi_url_link'
 import { OpenapiCustomer } from './openapi_customer'
 import { OpenapiQRCode } from './openapi_qrcode'
+import { OpenapiNotification } from './openapi_notification'
 
 export interface DouyinOpenapi
   extends OpenapiBase,
     OpenapiLogin,
     OpenapiUrlLink,
     OpenapiCustomer,
-    OpenapiQRCode {}
+    OpenapiQRCode,
+    OpenapiNotification {}
 
 export class DouyinOpenapi extends OpenapiBase {
   constructor(
@@ -30,5 +32,6 @@ applyMixins(DouyinOpenapi, [
   OpenapiLogin,
   OpenapiUrlLink,
   OpenapiCustomer,
-  OpenapiQRCode
+  OpenapiQRCode,
+  OpenapiNotification
 ])
